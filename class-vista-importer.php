@@ -264,23 +264,60 @@ class Vista_Importer {
 			if ( $api_ts && $stored_ts === $api_ts && $stored_vv === $api_vv && $stored_vl === $api_vl ) {
 				// Don't skip if core content fields are missing — e.g. first import used
 				// /listar only (no Características), or code was updated after initial sync.
-				$is_content_missing = (
-					( '' === (string) get_post_meta( $existing, 'caracteristicas', true ) &&
-					  isset( $imovel['Caracteristicas'] ) && ! empty( $imovel['Caracteristicas'] ) )
-					||
-					( '' === (string) get_post_meta( $existing, 'infraestrutura', true ) &&
-					  isset( $imovel['InfraEstrutura'] ) && ! empty( $imovel['InfraEstrutura'] ) )
-					||
-					( '' === (string) get_post_meta( $existing, 'descricao_completa', true ) &&
-					  ! empty( $imovel['DescricaoWeb'] ) )
-					||
-					( '' === (string) get_post_meta( $existing, 'tipo_negocio', true ) )
-					||
-					( '' === (string) get_post_meta( $existing, 'codigo_referencia', true ) )
-					||
-					( '' === (string) get_post_meta( $existing, 'descricao_empreendimento', true ) &&
-					  ! empty( $imovel['DescricaoEmpreendimento'] ) )
-				);
+
+					$is_content_missing = (
+	( '' === (string) get_post_meta( $existing, 'caracteristicas', true ) &&
+	  isset( $imovel['Caracteristicas'] ) && ! empty( $imovel['Caracteristicas'] ) )
+	||
+	( '' === (string) get_post_meta( $existing, 'infraestrutura', true ) &&
+	  isset( $imovel['InfraEstrutura'] ) && ! empty( $imovel['InfraEstrutura'] ) )
+	||
+	( '' === (string) get_post_meta( $existing, 'descricao_completa', true ) &&
+	  ! empty( $imovel['DescricaoWeb'] ) )
+	||
+	( '' === (string) get_post_meta( $existing, 'tipo_negocio', true ) )
+	||
+	( '' === (string) get_post_meta( $existing, 'codigo_referencia', true ) )
+	||
+	( '' === (string) get_post_meta( $existing, 'codigo', true ) &&
+	  ! empty( $imovel['Codigo'] ) )
+	||
+	( '' === (string) get_post_meta( $existing, 'status', true ) &&
+	  ! empty( $imovel['Status'] ) )
+	||
+	( '' === (string) get_post_meta( $existing, 'bairro', true ) &&
+	  ! empty( $imovel['Bairro'] ) )
+	||
+	( '' === (string) get_post_meta( $existing, 'cidade', true ) &&
+	  ! empty( $imovel['Cidade'] ) )
+	||
+	( '' === (string) get_post_meta( $existing, 'dormitorios', true ) &&
+	  isset( $imovel['Dormitorios'] ) && '' !== (string) $imovel['Dormitorios'] )
+	||
+	( '' === (string) get_post_meta( $existing, 'suites', true ) &&
+	  isset( $imovel['Suites'] ) && '' !== (string) $imovel['Suites'] )
+	||
+	( '' === (string) get_post_meta( $existing, 'vagas', true ) &&
+	  isset( $imovel['Vagas'] ) && '' !== (string) $imovel['Vagas'] )
+	||
+	( '' === (string) get_post_meta( $existing, 'moeda', true ) &&
+	  ! empty( $imovel['Moeda'] ) )
+	||
+	( '' === (string) get_post_meta( $existing, 'categoria', true ) &&
+	  ! empty( $imovel['Categoria'] ) )
+	||
+	( '' === (string) get_post_meta( $existing, 'finalidade', true ) &&
+	  ! empty( $imovel['Finalidade'] ) )
+	||
+	( '' === (string) get_post_meta( $existing, 'descricao_empreendimento', true ) &&
+	  ! empty( $imovel['DescricaoEmpreendimento'] ) )
+);
+
+
+
+
+
+				
 				if ( ! $is_content_missing ) {
 					return array( 'action' => 'skipped', 'photos' => 0 );
 				}
@@ -1039,13 +1076,20 @@ class Vista_Importer {
 
 		// Fields to compare API value vs. stored WP meta value.
 		$compare_fields = array(
-			'DataHoraAtualizacao' => 'data_hora_atualizacao',
-			'ValorVenda'          => 'valor_venda',
-			'ValorLocacao'        => 'valor_locacao',
-			'Dormitorios'         => 'dormitorios',
-			'Cidade'              => 'cidade',
-			'Status'              => 'status',
-		);
+	'Codigo'              => 'codigo',
+	'DataHoraAtualizacao' => 'data_hora_atualizacao',
+	'ValorVenda'          => 'valor_venda',
+	'ValorLocacao'        => 'valor_locacao',
+	'Dormitorios'         => 'dormitorios',
+	'Suites'              => 'suites',
+	'Vagas'               => 'vagas',
+	'Cidade'              => 'cidade',
+	'Bairro'              => 'bairro',
+	'Status'              => 'status',
+	'Moeda'               => 'moeda',
+	'Categoria'           => 'categoria',
+	'Finalidade'          => 'finalidade',
+);
 
 		$page        = 1;
 		$pages_total = 1;
@@ -1099,15 +1143,24 @@ class Vista_Importer {
 					// Also force update if core content fields are empty — catches properties
 					// imported before the current code (e.g. /listar only, no Características).
 					if ( ! $needs_update ) {
-						if (
-							( '' === (string) get_post_meta( $post_id, 'caracteristicas', true ) && ! empty( $imovel['Caracteristicas'] ) ) ||
-							( '' === (string) get_post_meta( $post_id, 'infraestrutura', true )   && ! empty( $imovel['InfraEstrutura'] ) ) ||
-							( '' === (string) get_post_meta( $post_id, 'descricao_completa', true ) && ! empty( $imovel['DescricaoWeb'] ) )
-						) {
-							$needs_update = true;
-						}
-					}
-				}
+	if (
+		( '' === (string) get_post_meta( $post_id, 'caracteristicas', true ) && ! empty( $imovel['Caracteristicas'] ) ) ||
+		( '' === (string) get_post_meta( $post_id, 'infraestrutura', true )   && ! empty( $imovel['InfraEstrutura'] ) ) ||
+		( '' === (string) get_post_meta( $post_id, 'descricao_completa', true ) && ! empty( $imovel['DescricaoWeb'] ) ) ||
+		( '' === (string) get_post_meta( $post_id, 'codigo', true ) && ! empty( $imovel['Codigo'] ) ) ||
+		( '' === (string) get_post_meta( $post_id, 'status', true ) && ! empty( $imovel['Status'] ) ) ||
+		( '' === (string) get_post_meta( $post_id, 'bairro', true ) && ! empty( $imovel['Bairro'] ) ) ||
+		( '' === (string) get_post_meta( $post_id, 'cidade', true ) && ! empty( $imovel['Cidade'] ) ) ||
+		( '' === (string) get_post_meta( $post_id, 'dormitorios', true ) && isset( $imovel['Dormitorios'] ) && '' !== (string) $imovel['Dormitorios'] ) ||
+		( '' === (string) get_post_meta( $post_id, 'suites', true ) && isset( $imovel['Suites'] ) && '' !== (string) $imovel['Suites'] ) ||
+		( '' === (string) get_post_meta( $post_id, 'vagas', true ) && isset( $imovel['Vagas'] ) && '' !== (string) $imovel['Vagas'] ) ||
+		( '' === (string) get_post_meta( $post_id, 'moeda', true ) && ! empty( $imovel['Moeda'] ) ) ||
+		( '' === (string) get_post_meta( $post_id, 'categoria', true ) && ! empty( $imovel['Categoria'] ) ) ||
+		( '' === (string) get_post_meta( $post_id, 'finalidade', true ) && ! empty( $imovel['Finalidade'] ) )
+	) {
+		$needs_update = true;
+	}
+}
 
 				if ( $needs_update ) {
 					// Force update by clearing the DataHoraAtualizacao so skip-update won't fire.
