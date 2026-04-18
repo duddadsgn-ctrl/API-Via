@@ -1,0 +1,14 @@
+.vista-api-wrap .nav-tab-wrapper { margin-bottom: 16px; }
+.vista-api-wrap .vista-log {
+	background: #1d2327;
+	color: #dcdcaa;
+	padding: 12px;
+	max-height: 520px;
+	overflow: auto;
+	font-size: 12px;
+	line-height: 1.5;
+	white-space: pre-wrap;
+	word-break: break-word;
+}
+.vista-guide h3 { margin-top: 22px; }
+.vista-guide ul, .vista-guide ol { margin-left: 22px; }
